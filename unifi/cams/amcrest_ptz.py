@@ -132,6 +132,6 @@ class AmcrestPTZCam(UnifiCamBase):
         status = self.cam.ptz_status()
         self.logger.info("CURRENT PTZ STATUS IS: %s", status)
         
-        ptz_list = self.camera.ptz_status().split('\r\n')[8:11]
+        ptz_list = self.cam.ptz_status().split('\r\n')[8:11]
 
         self.logger.info("PTZ LIST IS: %s", ptz_list)
