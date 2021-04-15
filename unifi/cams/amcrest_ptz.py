@@ -58,25 +58,25 @@ class AmcrestPTZCam(UnifiCamBase):
 
         if options["x"] < 0:
             action = "start"
-            arg2 = 1
+            arg2 = 3
             code = "Left"
         elif options["x"] > 0:
             action = "start"
-            arg2 = 1
+            arg2 = 3
             code = "Right"
 
         if options["y"] > 0:
-            arg2 = 1
+            arg2 = 3
             if action == "start":
-                arg1 = 1
+                arg1 = 3
                 code = code + "Up"
             else:
                 code = "Up"
             action = "start"
         elif options["y"] < 0:
-            arg2 = 1
+            arg2 = 3
             if action == "start":
-                arg1 = 1
+                arg1 = 3
                 code = code + "Down"
             else:
                 code = "Down"
