@@ -114,6 +114,10 @@ class Core(object):
         self.version = version
         return
 
+    async def process_continuous_move(self, msg: AVClientRequest) -> None:
+        if msg["payload"]:
+            self.cam.continuous_move(msg["payload"])
+
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
             "aeMode": "auto",
@@ -725,7 +729,7 @@ class Core(object):
             ("responseExpected" not in m)
             or (m["responseExpected"] == False)
             and (
-                fn not in ["GetRequest", "ChangeVideoSettings", "UpdateFirmwareRequest"]
+                fn not in ["GetRequest", "ChangeVideoSettings", "UpdateFirmwareRequest", "ContinuousMove"]
             )
         ):
             return False
@@ -762,6 +766,8 @@ class Core(object):
             res = await self.process_snapshot_request(m)
         elif fn == "UpdateUsernamePassword":
             res = await self.process_username_password(m)
+        elif fn == "ContinuousMove"
+            res = await self.process_continuous_move(m)
         elif fn == "UpdateFirmwareRequest":
             res = await self.process_upgrade(m)
             return True

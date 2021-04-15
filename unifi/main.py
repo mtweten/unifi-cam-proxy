@@ -5,11 +5,12 @@ import os
 
 import coloredlogs
 
+from unifi.cams.amcrest_ptz import AmcrestPTZCam
 from unifi.cams.hikvision import HikvisionCam
 from unifi.cams.rtsp import RTSPCam
 from unifi.core import Core
 
-CAMS = {"hikvision": HikvisionCam, "rtsp": RTSPCam}
+CAMS = {"amcrest_ptz": AmcrestPTZCam, "hikvision": HikvisionCam, "rtsp": RTSPCam}
 
 logging.basicConfig()
 coloredlogs.install(level="DEBUG")
@@ -22,7 +23,7 @@ def parse_args():
         "--cert",
         "-c",
         required=True,
-        default="client.pem",
+        default="client.pem",pip
         help="Client certificate path",
     )
     parser.add_argument("--token", "-t", required=True, help="Adoption token")
