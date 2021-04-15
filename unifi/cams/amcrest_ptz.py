@@ -23,6 +23,8 @@ class AmcrestPTZCam(UnifiCamBase):
         self.args = args
         self.dir = tempfile.mkdtemp()
         self.streams = {}
+
+        self.logger.info("Username: %s, Password: %s", self.args.username, self.args.password)
         self.cam = AmcrestCamera(self.args.ip, 80, self.args.username, self.args.password).camera
 
     def get_snapshot(self):
