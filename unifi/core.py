@@ -767,7 +767,7 @@ class Core(object):
             res = await self.process_snapshot_request(m)
         elif fn == "UpdateUsernamePassword":
             res = await self.process_username_password(m)
-        elif fn == "ContinuousMove"
+        elif fn == "ContinuousMove":
             res = await self.process_continuous_move(m)
         elif fn == "UpdateFirmwareRequest":
             res = await self.process_upgrade(m)
