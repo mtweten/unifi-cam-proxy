@@ -129,5 +129,5 @@ class AmcrestPTZCam(UnifiCamBase):
         self.logger.info("UNIFI PROTECT SETTING ZOOM POSITION TO: %s", zoom_pos_percent)
         
         status = self.cam.ptz_status
-        self.logger.info("CURRENT PTZ STATUS IS: %s", status)
+        self.logger.info("CURRENT PTZ STATUS IS: %s", status.position[2])
         
