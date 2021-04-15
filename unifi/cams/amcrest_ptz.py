@@ -26,14 +26,24 @@ class AmcrestPTZCam(UnifiCamBase):
         self.logger = logger
         self.args = args
         self.dir = tempfile.mkdtemp()
-        self.streams = {}
-
         self.cam = AmcrestCamera(self.args.ip, 80, self.args.username, self.args.password).camera
 
+        self.rtsp_url = self.args.rtsp_url if self.args.rtsp_url else self.cam.rtsp_url()
+        
+        self.logger.info(self.dir)
+        cmd = f'ffmpeg -y -re -rtsp_transport tcp -i "{self.rtsp_url}" -vf fps=1 -update 1 {self.dir}/screen.jpg'
+        self.logger.info(cmd)
+        self.streams = {
+            "mjpg": subprocess.Popen(
+                cmd, stdout=FNULL, stderr=subprocess.STDOUT, shell=True
+            )
+        }
+
     def get_snapshot(self):
-        img_file = "{}/screen.jpg".format(self.dir)
-        self.cam.snapshot(1, img_file)
-        return img_file
+        return "{}/screen.jpg".format(self.dir)
+        # img_file = "{}/screen.jpg".format(self.dir)
+        # self.cam.snapshot(1, img_file)
+        # return img_file
 
     def continuous_move(self, options):
         action = "stop"
@@ -72,6 +82,7 @@ class AmcrestPTZCam(UnifiCamBase):
         if code == "None":
             code = "Down"
         
+        # TODO don't block? set and forget
         self.cam.ptz_control_command(action=action, code=code, arg1=arg1, arg2=arg2, arg3=arg3)
 
     def start_video_stream(
@@ -79,12 +90,12 @@ class AmcrestPTZCam(UnifiCamBase):
     ):
         # todo CHANNELS
         # TODO use alternative rtsp to use the rtsp-simple-server to reduce load. Or try and use the actual amcrest api instead
-        vid_src = self.cam.rtsp_url()
+        vid_src = self.args.rtsp_url if self.args.rtsp_url else self.cam.rtsp_url()
 
         # hack
         vid_src = vid_src.replace(self.args.password, urllib.parse.quote(self.args.password))
 
-        cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -rtsp_transport tcp -i "{}" -vcodec copy -use_wallclock_as_timestamps 1 -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
+        cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -rtsp_transport tcp -i "{}" -vcodec copy -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
             vid_src,
             stream_name,
             sys.executable,
