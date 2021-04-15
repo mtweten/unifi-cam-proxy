@@ -15,6 +15,7 @@ from unifi.cams.base import UnifiCamBase
 
 FNULL = open(os.devnull, "w")
 
+# TODO just use onvif
 class AmcrestPTZCam(UnifiCamBase):
     @classmethod
     def add_parser(self, parser):
@@ -128,6 +129,9 @@ class AmcrestPTZCam(UnifiCamBase):
         zoom_pos_percent = options["zoomPosition"]
         self.logger.info("UNIFI PROTECT SETTING ZOOM POSITION TO: %s", zoom_pos_percent)
         
-        status = self.cam.ptz_status
-        self.logger.info("CURRENT PTZ STATUS IS: %s", status.position[2])
+        status = self.cam.ptz_status()
+        self.logger.info("CURRENT PTZ STATUS IS: %s", status)
         
+        ptz_list = self.camera.ptz_status().split('\r\n')[8:11]
+
+        self.logger.info("PTZ LIST IS: %s", ptz_list)
