@@ -29,6 +29,8 @@ class AmcrestPTZCam(UnifiCamBase):
         self.cam = AmcrestCamera(self.args.ip, 80, self.args.username, self.args.password).camera
 
         self.rtsp_url = self.args.rtsp_url if self.args.rtsp_url else self.cam.rtsp_url()
+        #hack
+        self.rtsp_url.replace(self.args.password, urllib.parse.quote(self.args.password))
         
         self.logger.info(self.dir)
         cmd = f'ffmpeg -y -re -rtsp_transport tcp -i "{self.rtsp_url}" -vf fps=1 -update 1 {self.dir}/screen.jpg'
@@ -90,13 +92,9 @@ class AmcrestPTZCam(UnifiCamBase):
     ):
         # todo CHANNELS
         # TODO use alternative rtsp to use the rtsp-simple-server to reduce load. Or try and use the actual amcrest api instead
-        vid_src = self.args.rtsp_url if self.args.rtsp_url else self.cam.rtsp_url()
-
-        # hack
-        vid_src = vid_src.replace(self.args.password, urllib.parse.quote(self.args.password))
 
         cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -rtsp_transport tcp -i "{}" -vcodec copy -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
-            vid_src,
+            self.rtsp_url,
             stream_name,
             sys.executable,
             destination[0],
