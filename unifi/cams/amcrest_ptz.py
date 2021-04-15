@@ -69,7 +69,7 @@ class AmcrestPTZCam(UnifiCamBase):
             
         # Seems like it has to be a valid code
         if code == "None":
-            code == "Down"
+            code = "Down"
         
         self.cam.ptz_control_command(action=action, code=code, arg1=arg1, arg2=arg2, arg3=arg3)
 
