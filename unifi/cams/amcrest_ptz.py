@@ -108,3 +108,26 @@ class AmcrestPTZCam(UnifiCamBase):
             self.streams[stream_name] = subprocess.Popen(
                 cmd, stdout=FNULL, stderr=subprocess.STDOUT, shell=True
             )
+
+    # def get_video_settings(self):
+    #     r = self.cam.PTZCtrl.channels[1].status(method="get")["PTZStatus"][
+    #         "AbsoluteHigh"
+    #     ]
+    #     return {
+    #         # Tilt/elevation
+    #         "brightness": int(100 * int(r["azimuth"]) / 3600),
+    #         # Pan/azimuth
+    #         "contrast": int(100 * int(r["azimuth"]) / 3600),
+    #         # Zoom
+    #         "hue": int(100 * int(r["absoluteZoom"]) / 40),
+    #     }
+
+    def change_video_settings(self, options):
+        #percentage?
+        # scale of amcrest is 0-128
+        zoom_pos_percent = options["zoomPosition"]
+        self.logger.info("UNIFI PROTECT SETTING ZOOM POSITION TO: %s", zoom_pos_percent)
+        
+        status = self.cam.ptz_status
+        self.logger.info("CURRENT PTZ STATUS IS: %s", status)
+        
