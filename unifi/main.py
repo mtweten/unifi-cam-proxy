@@ -38,7 +38,7 @@ def parse_args():
         "--verbose", "-v", action="store_true", help="increase output verbosity"
     )
     parser.add_argument(
-        "--model", "-m", default="UVC G3", help="Model of camera"
+        "--model", "-o", default="UVC G3", help="Model of camera"
     )
 
     sp = parser.add_subparsers(help="Camera implementations", dest="impl")
