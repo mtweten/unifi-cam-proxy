@@ -23,7 +23,7 @@ def parse_args():
         "--cert",
         "-c",
         required=True,
-        default="client.pem",pip
+        default="client.pem",
         help="Client certificate path",
     )
     parser.add_argument("--token", "-t", required=True, help="Adoption token")
