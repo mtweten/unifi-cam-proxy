@@ -7,6 +7,7 @@ import tempfile
 from typing import Tuple
 
 from amcrest import AmcrestCamera
+from requests.auth import HTTPDigestAuth
 
 from unifi.cams.base import UnifiCamBase
 
@@ -29,7 +30,7 @@ class AmcrestPTZCam(UnifiCamBase):
 
     def get_snapshot(self):
         img_file = "{}/screen.jpg".format(self.dir)
-        self.cam.snapshot(0, img_file)
+        self.cam.snapshot(1, img_file)
         return img_file
 
     def continuous_move(self, options):
