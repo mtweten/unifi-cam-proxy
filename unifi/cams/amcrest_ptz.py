@@ -4,10 +4,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import urllib.parse
+
 from typing import Tuple
 
 from amcrest import AmcrestCamera
-from requests.auth import HTTPDigestAuth
+from requests.auth import HTTPDigestAuth 
 
 from unifi.cams.base import UnifiCamBase
 
@@ -25,7 +27,6 @@ class AmcrestPTZCam(UnifiCamBase):
         self.dir = tempfile.mkdtemp()
         self.streams = {}
 
-        self.logger.info("Username: %s, Password: %s", self.args.username, self.args.password)
         self.cam = AmcrestCamera(self.args.ip, 80, self.args.username, self.args.password).camera
 
     def get_snapshot(self):
@@ -55,6 +56,9 @@ class AmcrestPTZCam(UnifiCamBase):
     ):
         # todo CHANNELS
         vid_src = self.cam.rtsp_url()
+
+        # hack
+        vid_src = vid_src.replace(self.args.password, urllib.parse.quote(self.args.password))
 
         cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -i "{}" -vcodec copy -use_wallclock_as_timestamps 1 -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
             vid_src,
