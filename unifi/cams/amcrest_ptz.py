@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 import shutil
 import subprocess
@@ -126,7 +127,8 @@ class AmcrestPTZCam(UnifiCamBase):
     def change_video_settings(self, options):
         #percentage?
         # scale of amcrest is 0-128
-        zoom_pos_percent = options["zoomPosition"]
+        zoom_pos_percent = float(options["zoomPosition"])/100.0
+        zoom_pos = math.ceil(zoom_pos_percent * 128.0)
         self.logger.info("UNIFI PROTECT SETTING ZOOM POSITION TO: %s", zoom_pos_percent)
         
         status = self.cam.ptz_status()
@@ -135,3 +137,6 @@ class AmcrestPTZCam(UnifiCamBase):
         ptz_list = self.cam.ptz_status().split('\r\n')[8:11]
 
         self.logger.info("PTZ LIST IS: %s", ptz_list)
+
+        x, y, z = [x.split('=')[1] for x in ptz_list]
+        self.cam.ptz_control_command(action="start", code="PositionABS", arg1=x, arg2=y, arg3=zoom_pos)
