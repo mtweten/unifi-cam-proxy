@@ -30,7 +30,7 @@ class AmcrestPTZCam(UnifiCamBase):
 
         self.rtsp_url = self.args.rtsp_url if self.args.rtsp_url else self.cam.rtsp_url()
         #hack
-        self.rtsp_url.replace(self.args.password, urllib.parse.quote(self.args.password))
+        self.rtsp_url = self.rtsp_url.replace(self.args.password, urllib.parse.quote(self.args.password))
         
         self.logger.info(self.dir)
         cmd = f'ffmpeg -y -re -rtsp_transport tcp -i "{self.rtsp_url}" -vf fps=1 -update 1 {self.dir}/screen.jpg'
