@@ -23,6 +23,7 @@ class Core(object):
         self.mac = args.mac
         self.name = args.name
         self.cam_ip = args.ip
+        self.model = args.model
         self.cam = camera
         self.logger = logger
         self._msg_id = 0
@@ -73,7 +74,7 @@ class Core(object):
                     "idleTime": 191.96,
                     "ip": self.cam_ip,
                     "mac": self.mac,
-                    "model": "UVC G4 PTZ",
+                    "model": self.model,
                     "name": self.name,
                     "protocolVersion": 67,
                     "rebootTimeoutSec": 30,

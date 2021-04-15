@@ -37,6 +37,9 @@ def parse_args():
     parser.add_argument(
         "--verbose", "-v", action="store_true", help="increase output verbosity"
     )
+    parser.add_argument(
+        "--model", "-m", default="UVC G3", help="Model of camera"
+    )
 
     sp = parser.add_subparsers(help="Camera implementations", dest="impl")
     for (name, impl) in CAMS.items():
