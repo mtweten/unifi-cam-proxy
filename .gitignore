@@ -8,3 +8,4 @@ run/
 MANIFEST
 MANIFEST.in
 .pyre/
+.vscode/
