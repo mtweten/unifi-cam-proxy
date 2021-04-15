@@ -36,6 +36,7 @@ class AmcrestPTZCam(UnifiCamBase):
 
     def continuous_move(self, options):
         action = "stop"
+        # Doesn't seem to matter if we're stopping
         code = "None"
 
         arg1 = arg2 = arg3 = 0
@@ -48,6 +49,27 @@ class AmcrestPTZCam(UnifiCamBase):
             action = "start"
             arg2 = 1
             code = "Right"
+
+        if options["y"] > 0:
+            arg2 = 1
+            if action == "start":
+                arg1 = 1
+                code = code + "Up"
+            else:
+                code = "Up"
+            action = "start"
+        elif options["y"] < 0:
+            arg2 = 1
+            if action == "start":
+                arg1 = 1
+                code = code + "Down"
+            else:
+                code = "Down"
+            action = "start"
+            
+        # Seems like it has to be a valid code
+        if code == "None":
+            code == "Down"
         
         self.cam.ptz_control_command(action=action, code=code, arg1=arg1, arg2=arg2, arg3=arg3)
 
