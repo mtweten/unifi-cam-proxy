@@ -20,6 +20,7 @@ class AmcrestPTZCam(UnifiCamBase):
     def add_parser(self, parser):
         parser.add_argument("--username", "-u", required=True, help="Camera username")
         parser.add_argument("--password", "-p", required=True, help="Camera password")
+        parser.add_argument("--rtsp-url", "-r", required=False, help="Alternative RTSP url")
 
     def __init__(self, args, logger=None):
         self.logger = logger
@@ -77,12 +78,13 @@ class AmcrestPTZCam(UnifiCamBase):
         self, stream_index: str, stream_name: str, destination: Tuple[str, int]
     ):
         # todo CHANNELS
+        # TODO use alternative rtsp to use the rtsp-simple-server to reduce load. Or try and use the actual amcrest api instead
         vid_src = self.cam.rtsp_url()
 
         # hack
         vid_src = vid_src.replace(self.args.password, urllib.parse.quote(self.args.password))
 
-        cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -i "{}" -vcodec copy -use_wallclock_as_timestamps 1 -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
+        cmd = 'ffmpeg -y -f lavfi -i aevalsrc=0 -rtsp_transport tcp -i "{}" -vcodec copy -use_wallclock_as_timestamps 1 -strict -2 -c:a aac -metadata streamname={} -f flv - | {} -m unifi.clock_sync | nc {} {}'.format(
             vid_src,
             stream_name,
             sys.executable,
