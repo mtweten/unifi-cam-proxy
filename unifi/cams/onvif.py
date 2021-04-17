@@ -134,7 +134,7 @@ class OnvifCam(UnifiCamBase):
         }
         result = await media_service.GetStreamUri(req)
 
-        return = result.Uri.replace(
+        return result.Uri.replace(
             "rtsp://", f"rtsp://{self.args.username}:{urllib.parse.quote(self.args.password)}@", 1
         )
 
