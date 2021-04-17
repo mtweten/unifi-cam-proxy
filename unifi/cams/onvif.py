@@ -7,6 +7,8 @@ import sys
 import tempfile
 import urllib.parse
 
+import onvif
+
 from dataclasses import dataclass
 from onvif import ONVIFCamera
 from typing import Tuple
