@@ -11,6 +11,7 @@ import onvif
 
 from onvif.exceptions import ONVIFError
 from zeep.exceptions import Fault
+from httpx import RequestError
 
 from contextlib import suppress
 from dataclasses import dataclass
