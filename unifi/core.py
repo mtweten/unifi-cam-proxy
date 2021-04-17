@@ -28,6 +28,8 @@ class Core(object):
         headers = {"camera-mac": self.mac}
         has_connected = False
 
+        await self.cam.async_setup()
+
         @backoff.on_predicate(
             backoff.expo,
             lambda retryable: retryable,

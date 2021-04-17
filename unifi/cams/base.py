@@ -64,6 +64,9 @@ class UnifiCamBase(metaclass=ABCMeta):
             help="RTSP transport protocol used by stream",
         )
 
+    async def async_setup(self):
+        pass
+
     async def _run(self, ws) -> None:
         self._session = ws
         await self.init_adoption()
@@ -86,6 +89,12 @@ class UnifiCamBase(metaclass=ABCMeta):
         return {}
 
     def change_video_settings(self, options) -> None:
+        pass
+
+    async def continuous_move(self, payload):
+        pass
+
+    async def relative_move(self, payload):
         pass
 
     @abstractmethod
@@ -250,6 +259,16 @@ class UnifiCamBase(metaclass=ABCMeta):
                         version += chr(b)
                 self.logger.debug(f"Pretending to upgrade to: {version}")
                 self.args.fw_version = version
+
+    async def process_continuous_move(self, msg: AVClientRequest) -> None:
+        # TODO any more high level stuff here?
+        if msg["payload"]:
+            await self.continuous_move(msg["payload"])
+
+    async def process_relative_move(self, msg: AVClientRequest) -> None:
+        # TODO any more high level stuff here?
+        if msg["payload"]:
+            await self.relative_move(msg["payload"])
 
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
@@ -811,6 +830,8 @@ class UnifiCamBase(metaclass=ABCMeta):
                     "ChangeVideoSettings",
                     "UpdateFirmwareRequest",
                     "Reboot",
+                    "ContinuousMove",
+                    "Center",
                 ]
             )
         ):
@@ -842,6 +863,10 @@ class UnifiCamBase(metaclass=ABCMeta):
             res = await self.process_analytics_settings(m)
         elif fn == "GetRequest":
             res = await self.process_snapshot_request(m)
+        elif fn == "ContinuousMove":
+            await self.process_continuous_move(m)
+        elif fn == "Center":
+            await self.process_relative_move(m)
         elif fn == "UpdateUsernamePassword":
             res = self.gen_response(
                 "UpdateUsernamePassword", response_to=m["messageId"]
