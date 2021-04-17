@@ -9,6 +9,9 @@ import urllib.parse
 
 import onvif
 
+from onvif.exceptions import ONVIFError
+from zeep.exceptions import Fault
+
 from contextlib import suppress
 from dataclasses import dataclass
 from onvif import ONVIFCamera
