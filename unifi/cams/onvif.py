@@ -9,6 +9,7 @@ import urllib.parse
 
 import onvif
 
+from contextlib import suppress
 from dataclasses import dataclass
 from onvif import ONVIFCamera
 from typing import Tuple
