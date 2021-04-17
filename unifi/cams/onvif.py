@@ -54,6 +54,15 @@ class Capabilities:
     events: bool = False
     ptz: bool = False
 
+@dataclass
+class PTZ:
+    """Represents PTZ configuration on a profile."""
+
+    continuous: bool
+    relative: bool
+    absolute: bool
+    presets: list[str] = None
+
 class OnvifCam(UnifiCamBase):
     def __init__(self, args, logger=None):
         super(OnvifCam, self).__init__(args, logger)
