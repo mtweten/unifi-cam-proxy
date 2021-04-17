@@ -100,7 +100,9 @@ class OnvifCam(UnifiCamBase):
             # TODO need to exit
             return False
 
-        self.stream_uri = await self.async_get_stream_uri(self.profiles[0])
+        self.stream_uris = []
+        self.stream_uris.append(await self.async_get_stream_uri(self.profiles[0]))
+        self.stream_uris.append(await self.async_get_stream_uri(self.profiles[1]))
 
     async def get_snapshot(self):
         img_file = "{}/screen.jpg".format(self.snapshot_dir)
@@ -141,7 +143,10 @@ class OnvifCam(UnifiCamBase):
 
     # TODO
     def get_stream_source(self, stream_index: str):
-        return self.stream_uri
+        if stream_index != "video1":
+            return self.stream_uris[1]
+
+        return self.stream_uris[0]
 
     async def async_get_stream_uri(self, profile: Profile) -> str:
         """Get the stream URI for a specified profile."""
