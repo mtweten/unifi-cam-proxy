@@ -56,6 +56,9 @@ class UnifiCamBase(metaclass=ABCMeta):
             help="RTSP transport protocol used by stream",
         )
 
+    async def async_setup(self):
+        pass
+
     async def _run(self, ws):
         self._session = ws
         await self.init_adoption()

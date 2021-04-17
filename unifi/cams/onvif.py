@@ -88,6 +88,20 @@ class OnvifCam(UnifiCamBase):
         #     help="Specify a port number to enable the HTTP API (default: disabled)",
         # )
 
+    async def async_setup(self):
+        await self.cam.update_xaddrs()
+
+        self.capabilities = await self.async_get_capabilities()
+        self.profiles = await self.async_get_profiles()
+        self.logger.info(f"PROFILES: {self.profiles}")
+
+        # No camera profiles to add
+        if not self.profiles:
+            # TODO need to exit
+            return False
+
+        self.stream_uri = await self.async_get_stream_uri(self.profiles[0])
+
     async def get_snapshot(self):
         img_file = "{}/screen.jpg".format(self.snapshot_dir)
         snapshot_bytes = await self.cam.get_snapshot(self.profiles[0].token)
@@ -102,22 +116,10 @@ class OnvifCam(UnifiCamBase):
         #     )
         return img_file
 
-    async def run(self):
+    #async def run(self):
         # Get device information.
 
-        await self.cam.update_xaddrs()
 
-        self.capabilities = await self.async_get_capabilities()
-        self.profiles = await self.async_get_profiles()
-        self.logger.info(f"PROFILES: {self.profiles}")
-
-        # No camera profiles to add
-        if not self.profiles:
-            # TODO need to exit
-            self.logger.info(f"NO PROFILES")
-            return False
-
-        self.stream_uri = await self.async_get_stream_uri(self.profiles[0])
        
         # Start video stream
         # Start snapshot
