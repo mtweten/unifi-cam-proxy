@@ -106,7 +106,7 @@ class OnvifCam(UnifiCamBase):
         img_file = "{}/screen.jpg".format(self.snapshot_dir)
         snapshot_bytes = await self.cam.get_snapshot(self.profiles[0].token)
         with open(img_file, "wb") as f:
-            f.write(resp)
+            f.write(snapshot_bytes)
 
         # if not self.snapshot_stream or self.snapshot_stream.poll() is not None:
         #     cmd = f'ffmpeg -nostdin -y -re -rtsp_transport {self.args.rtsp_transport} -i "{self.args.source}" -vf fps=1 -update 1 {self.snapshot_dir}/screen.jpg'
