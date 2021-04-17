@@ -109,10 +109,12 @@ class OnvifCam(UnifiCamBase):
 
         self.capabilities = await self.async_get_capabilities()
         self.profiles = await self.async_get_profiles()
+        self.logger.info(f"PROFILES: {self.profiles}")
 
         # No camera profiles to add
         if not self.profiles:
             # TODO need to exit
+            self.logger.info(f"NO PROFILES")
             return False
 
         self.stream_uri = await self.async_get_stream_uri(self.profiles[0])
