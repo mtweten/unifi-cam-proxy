@@ -56,7 +56,7 @@ class OnvifCam(UnifiCamBase):
         #self.snapshot_stream = None
         #self.runner = None
         # TODO WSDL
-        self.cam = ONVIFCamera(self.args.ip, 80, self.args.username, self.args.password, 'wsdl/')
+        self.cam = ONVIFCamera(self.args.ip, 80, self.args.username, self.args.password, f"{os.path.dirname(onvif.__file__)}/wsdl/")
     
 
     @classmethod
