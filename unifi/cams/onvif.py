@@ -143,7 +143,7 @@ class OnvifCam(UnifiCamBase):
     def get_stream_source(self, stream_index: str):
         return self.stream_uri
 
-    async def async_get_stream_uri(cam: ONVIFCamera, profile: Profile) -> str:
+    async def async_get_stream_uri(self, cam: ONVIFCamera, profile: Profile) -> str:
         """Get the stream URI for a specified profile."""
         media_service = self.cam.create_media_service()
         req = media_service.create_type("GetStreamUri")
