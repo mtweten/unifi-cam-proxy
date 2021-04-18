@@ -135,6 +135,25 @@ class OnvifCam(UnifiCamBase):
     #     if self.snapshot_stream:
     #         self.snapshot_stream.kill()
 
+    async def continuous_move(self, payload):
+        ptz_service = self.cam.create_ptz_service()
+        if payload["x"] == payload["y"] == payload["z"] == 0:
+            req = ptz_service.create_type("Stop")
+            req.ProfileToken = self.profiles[0].token
+            await ptz_service.Stop(req)
+            return
+            #    {"ProfileToken": req.ProfileToken, "PanTilt": True, "Zoom": False}
+            #)
+
+        req = ptz_service.create_type("ContinuousMove")
+        req.ProfileToken = self.profiles[0].token
+        req.Velocity = {
+            "PanTilt": {"x": int(payload["x"])/1000, "y": int(payload["y"])/1000},
+            "Zoom": {"x": 0},
+        }
+
+        await ptz_service.ContinuousMove(req)
+
     # TODO
     def get_stream_source(self, stream_index: str):
         if stream_index != "video1":

@@ -83,6 +83,9 @@ class UnifiCamBase(metaclass=ABCMeta):
     def change_video_settings(self, options):
         pass
 
+    async def continuous_move(self, payload):
+        pass
+
     @abstractmethod
     async def get_snapshot(self):
         raise NotImplementedError("You need to write this!")
@@ -208,6 +211,11 @@ class UnifiCamBase(metaclass=ABCMeta):
                         version += chr(b)
                 self.logger.debug(f"Pretending to upgrade to: {version}")
                 self.args.fw_version = version
+
+    async def process_continuous_move(self, msg: AVClientRequest) -> None:
+        # TODO any more high level stuff here?
+        if msg["payload"]:
+            await continuous_move(msg["payload"])
 
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
@@ -762,6 +770,7 @@ class UnifiCamBase(metaclass=ABCMeta):
                     "ChangeVideoSettings",
                     "UpdateFirmwareRequest",
                     "Reboot",
+                    "ContinuousMove",
                 ]
             )
         ):
@@ -793,6 +802,8 @@ class UnifiCamBase(metaclass=ABCMeta):
             res = await self.process_analytics_settings(m)
         elif fn == "GetRequest":
             res = await self.process_snapshot_request(m)
+        elif fn == "ContinuousMove":
+            await self.process_continuous_move(m)
         elif fn == "UpdateUsernamePassword":
             res = self.gen_response(
                 "UpdateUsernamePassword", response_to=m["messageId"]
