@@ -179,7 +179,7 @@ class OnvifCam(UnifiCamBase):
         x = (float(payload["x"]) - 500.0)/1000.0
         y = (float(payload["y"]) - 500.0)/1000.0
 
-        req.Position = {
+        req.Translation = {
             "PanTilt": {"x": x, "y": y},
         }
 
