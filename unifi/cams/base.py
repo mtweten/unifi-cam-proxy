@@ -86,7 +86,7 @@ class UnifiCamBase(metaclass=ABCMeta):
     async def continuous_move(self, payload):
         pass
 
-    async def absolute_move(self, payload):
+    async def relative_move(self, payload):
         pass
 
     @abstractmethod
@@ -220,10 +220,10 @@ class UnifiCamBase(metaclass=ABCMeta):
         if msg["payload"]:
             await self.continuous_move(msg["payload"])
 
-    async def process_absolute_move(self, msg: AVClientRequest) -> None:
+    async def process_relative_move(self, msg: AVClientRequest) -> None:
         # TODO any more high level stuff here?
         if msg["payload"]:
-            await self.absolute_move(msg["payload"])
+            await self.relative_move(msg["payload"])
 
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
@@ -814,7 +814,7 @@ class UnifiCamBase(metaclass=ABCMeta):
         elif fn == "ContinuousMove":
             await self.process_continuous_move(m)
         elif fn == "Center":
-            await self.process_absolute_move(m)
+            await self.process_relative_move(m)
         elif fn == "UpdateUsernamePassword":
             res = self.gen_response(
                 "UpdateUsernamePassword", response_to=m["messageId"]
