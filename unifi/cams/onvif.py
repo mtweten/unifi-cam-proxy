@@ -176,8 +176,11 @@ class OnvifCam(UnifiCamBase):
         req = ptz_service.create_type("AbsoluteMove")
         req.ProfileToken = self.profiles[0].token
 
+        x = (float(payload["x"]) - 500.0)/1000.0
+        y = (float(payload["y"]) - 500.0)/1000.0
+
         req.Position = {
-            "PanTilt": {"x": float(payload["x"]), "y": float(payload["y"])},
+            "PanTilt": {"x": x, "y": y)},
         }
 
         req.Speed = {
