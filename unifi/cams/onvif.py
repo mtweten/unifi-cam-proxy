@@ -73,7 +73,21 @@ class OnvifCam(UnifiCamBase):
         #self.runner = None
         # TODO WSDL
         self.cam = ONVIFCamera(self.args.ip, 80, self.args.username, self.args.password, f"{os.path.dirname(onvif.__file__)}/wsdl/")
+
+        #self._subscription: ONVIFService = None
     
+
+    # async def async_pull_messages(self, _now: dt = None) -> None:
+    #     pullpoint = self.device.create_pullpoint_service()
+    #     response = await pullpoint.PullMessages(
+    #         {"MessageLimit": 100, "Timeout": dt.timedelta(seconds=60)}
+    #     )
+
+    # def async_schedule_pull(self) -> None:
+    #     """Schedule async_pull_messages to run."""
+    #     self._unsub_refresh = async_call_later(self.hass, 1, self.async_pull_messages)
+
+
 
     @classmethod
     def add_parser(self, parser):
@@ -121,7 +135,9 @@ class OnvifCam(UnifiCamBase):
 
         # return img_file
 
-    #async def run(self):
+    async def run(self):
+        
+
         # if self.capabilities.ptz:
         #     self.device.create_ptz_service()
         # TODO connect to motion events API somehow
@@ -153,6 +169,26 @@ class OnvifCam(UnifiCamBase):
         }
 
         await ptz_service.ContinuousMove(req)
+
+    async def absolute_move(self, payload):
+        ptz_service = self.cam.create_ptz_service()
+
+        req = ptz_service.create_type("AbsoluteMove")
+        req.ProfileToken = self.profiles[0].token
+
+        req.Position = {
+            "PanTilt": {"x": float(payload["x"]), "y": float(payload["y"])},
+        }
+
+        req.Speed = {
+            "PanTilt": {"x": 1, "y": 1},
+            "Zoom": {"x": 1},
+        }
+
+        await ptz_service.AbsoluteMove(req)
+# INFO Processing [Center] message
+# 2021-04-18 02:28:26 dc7fbc875b3a OnvifCam[1] DEBUG Message contents: {'from': 'UniFiVideo', 'to': 'ubnt_avclient', 'responseExpected': False, 'functionName': 'Center', 'messageId': 270583, 'inResponseTo': 0, 'payload': {'x': 155.71428571428572, 'y': 261.58730158730157}}
+
 
     # TODO
     def get_stream_source(self, stream_index: str):

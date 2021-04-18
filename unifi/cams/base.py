@@ -86,6 +86,9 @@ class UnifiCamBase(metaclass=ABCMeta):
     async def continuous_move(self, payload):
         pass
 
+    async def absolute_move(self, payload):
+        pass
+
     @abstractmethod
     async def get_snapshot(self):
         raise NotImplementedError("You need to write this!")
@@ -216,6 +219,11 @@ class UnifiCamBase(metaclass=ABCMeta):
         # TODO any more high level stuff here?
         if msg["payload"]:
             await self.continuous_move(msg["payload"])
+
+    async def process_absolute_move(self, msg: AVClientRequest) -> None:
+        # TODO any more high level stuff here?
+        if msg["payload"]:
+            await self.absolute_move(msg["payload"])
 
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
@@ -771,6 +779,7 @@ class UnifiCamBase(metaclass=ABCMeta):
                     "UpdateFirmwareRequest",
                     "Reboot",
                     "ContinuousMove",
+                    "Center",
                 ]
             )
         ):
@@ -804,6 +813,8 @@ class UnifiCamBase(metaclass=ABCMeta):
             res = await self.process_snapshot_request(m)
         elif fn == "ContinuousMove":
             await self.process_continuous_move(m)
+        elif fn == "Center":
+            await self.process_absolute_move(m)
         elif fn == "UpdateUsernamePassword":
             res = self.gen_response(
                 "UpdateUsernamePassword", response_to=m["messageId"]
