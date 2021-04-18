@@ -215,7 +215,7 @@ class UnifiCamBase(metaclass=ABCMeta):
     async def process_continuous_move(self, msg: AVClientRequest) -> None:
         # TODO any more high level stuff here?
         if msg["payload"]:
-            await continuous_move(msg["payload"])
+            await self.continuous_move(msg["payload"])
 
     async def process_isp_settings(self, msg: AVClientRequest) -> AVClientResponse:
         payload = {
