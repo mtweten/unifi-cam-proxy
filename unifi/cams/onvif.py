@@ -135,7 +135,7 @@ class OnvifCam(UnifiCamBase):
 
         # return img_file
 
-    async def run(self):
+    # async def run(self):
         
 
         # if self.capabilities.ptz:
