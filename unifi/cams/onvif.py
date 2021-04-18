@@ -180,7 +180,7 @@ class OnvifCam(UnifiCamBase):
         y = (float(payload["y"]) - 500.0)/1000.0
 
         req.Position = {
-            "PanTilt": {"x": x, "y": y)},
+            "PanTilt": {"x": x, "y": y},
         }
 
         req.Speed = {
