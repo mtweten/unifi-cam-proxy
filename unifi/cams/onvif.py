@@ -69,7 +69,7 @@ class OnvifCam(UnifiCamBase):
         self.args = args
         #self.event_id = 0
         self.snapshot_dir = tempfile.mkdtemp()
-        #self.snapshot_stream = None
+        self.snapshot_stream = None
         #self.runner = None
         # TODO WSDL
         self.cam = ONVIFCamera(self.args.ip, 80, self.args.username, self.args.password, f"{os.path.dirname(onvif.__file__)}/wsdl/")
@@ -105,31 +105,25 @@ class OnvifCam(UnifiCamBase):
         self.stream_uris.append(await self.async_get_stream_uri(self.profiles[1]))
 
     async def get_snapshot(self):
-        img_file = "{}/screen.jpg".format(self.snapshot_dir)
-        snapshot_bytes = await self.cam.get_snapshot(self.profiles[0].token)
-        with open(img_file, "wb") as f:
-            f.write(snapshot_bytes)
+        if not self.snapshot_stream or self.snapshot_stream.poll() is not None:
+            cmd = f'ffmpeg -nostdin -y -re -rtsp_transport {self.args.rtsp_transport} -i "{self.stream_uris[1]}" -vf fps=1 -update 1 {self.snapshot_dir}/screen.jpg'
+            self.logger.info(f"Spawning stream for snapshots: {cmd}")
+            self.snapshot_stream = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True
+            )
+        return "{}/screen.jpg".format(self.snapshot_dir)
 
-        # if not self.snapshot_stream or self.snapshot_stream.poll() is not None:
-        #     cmd = f'ffmpeg -nostdin -y -re -rtsp_transport {self.args.rtsp_transport} -i "{self.args.source}" -vf fps=1 -update 1 {self.snapshot_dir}/screen.jpg'
-        #     self.logger.info(f"Spawning stream for snapshots: {cmd}")
-        #     self.snapshot_stream = subprocess.Popen(
-        #         cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True
-        #     )
-        return img_file
+        # TIMEOUTS FROM THIS, CAUSING DISCONNECTS?
+        # img_file = "{}/screen.jpg".format(self.snapshot_dir)
+        # snapshot_bytes = await self.cam.get_snapshot(self.profiles[0].token)
+        # with open(img_file, "wb") as f:
+        #     f.write(snapshot_bytes)
+
+        # return img_file
 
     #async def run(self):
-        # Get device information.
-
-
-       
-        # Start video stream
-        # Start snapshot
-
         # if self.capabilities.ptz:
         #     self.device.create_ptz_service()
-
-        
         # TODO connect to motion events API somehow
     
 
