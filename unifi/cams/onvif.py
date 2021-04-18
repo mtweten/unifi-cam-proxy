@@ -177,7 +177,7 @@ class OnvifCam(UnifiCamBase):
         req.ProfileToken = self.profiles[0].token
 
         x = (float(payload["x"]) - 500.0)/1000.0
-        y = (float(payload["y"]) - 500.0)/1000.0
+        y = -1.0 * ((float(payload["y"]) - 500.0)/1000.0)
 
         req.Translation = {
             "PanTilt": {"x": x, "y": y},
