@@ -176,8 +176,8 @@ class OnvifCam(UnifiCamBase):
         req = ptz_service.create_type("RelativeMove")
         req.ProfileToken = self.profiles[0].token
 
-        x = (float(payload["x"]) - 500.0)/1000.0
-        y = -1.0 * ((float(payload["y"]) - 500.0)/1000.0)
+        x = (float(payload["x"]) - 1296.0) / 2592.0
+        y = -1.0 * ((float(payload["y"]) - 760.0) / 1520.0)
 
         req.Translation = {
             "PanTilt": {"x": x, "y": y},
