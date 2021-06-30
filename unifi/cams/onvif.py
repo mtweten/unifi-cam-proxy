@@ -180,7 +180,7 @@ class OnvifCam(UnifiCamBase):
         if float(payload["x"]) < 495.0:
             x = ((-1.0 * float(payload["x"])) - 495.0) / 500.0
         else:
-            x = (float(payload["x"]) + 495.0) / 500.0
+            x = (float(payload["x"]) - 495.0) / 500.0
 
         # y = 0
         # if float(payload["y"]) < 495.0:
