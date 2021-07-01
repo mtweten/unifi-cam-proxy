@@ -196,11 +196,11 @@ class OnvifCam(UnifiCamBase):
         ty = math.sin(pan)             * lx + math.cos(pan)             * ly
         tz = math.cos(pan) * math.sin(tilt) * lx - math.sin(pan) * math.sin(tilt) * ly + math.cos(tilt) * lz
 
-        newtilt = math.atan2(tz, tx)
+        #newtilt = math.atan2(tz, tx)
         newpan  = math.asin(ty / math.sqrt(math.pow(tx,2) + math.pow(ty,2) + math.pow(tz,2)))
 
         req.Translation = {
-            "PanTilt": {"x": newpan, "y": newtilt},
+            "PanTilt": {"x": newpan, "y": 0},
         }
 
         req.Speed = {
