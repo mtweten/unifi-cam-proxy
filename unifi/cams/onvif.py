@@ -197,7 +197,7 @@ class OnvifCam(UnifiCamBase):
         tz = math.cos(pan) * math.sin(tilt) * lx - math.sin(pan) * math.sin(tilt) * ly + math.cos(tilt) * lz
 
         newtilt = math.atan2(tz, tx)
-        newpan  = math.asin(ty / math.sqrt(tx^2 + ty^2 + tz^2))
+        newpan  = math.asin(ty / math.sqrt(math.pow(tx,2) + math.pow(ty,2) + math.pow(tz,2)))
 
         req.Translation = {
             "PanTilt": {"x": newpan, "y": newtilt},
