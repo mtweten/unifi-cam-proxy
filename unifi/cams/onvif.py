@@ -173,7 +173,7 @@ class OnvifCam(UnifiCamBase):
     async def relative_move(self, payload):
         ptz_service = self.cam.create_ptz_service()
 
-        status = ptz_service.GetStatus(self.profiles[0].token)
+        status = await ptz_service.GetStatus(self.profiles[0].token)
 
         req = ptz_service.create_type("RelativeMove")
         req.ProfileToken = self.profiles[0].token
