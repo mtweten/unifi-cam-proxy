@@ -184,7 +184,7 @@ class OnvifCam(UnifiCamBase):
         x = float(payload["x"])
         y = float(payload["y"])
         fovx = 58.2
-        fovy = 58.2
+        fovy = 30.0
         w = 990
         h = 990
 
