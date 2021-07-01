@@ -272,7 +272,7 @@ class OnvifCam(UnifiCamBase):
                     is not None,
                     onvif_profile.PTZConfiguration.DefaultRelativePanTiltTranslationSpace
                     is not None,
-                    onvif_profile.PTZConfiguration.DefaultAbsolutePanTiltPositionSpace
+                    onvif_profile.PTZConfiguration.DefaultAbsolutePantTiltPositionSpace
                     is not None,
                 )
 
