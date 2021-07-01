@@ -173,24 +173,34 @@ class OnvifCam(UnifiCamBase):
     async def relative_move(self, payload):
         ptz_service = self.cam.create_ptz_service()
 
+        status = ptz_service.GetStatus(self.profiles[0].token)
+
         req = ptz_service.create_type("RelativeMove")
         req.ProfileToken = self.profiles[0].token
 
-        x = 0
-        if float(payload["x"]) < 495.0:
-            x = ((-1.0 * float(payload["x"])) - 495.0) / 500.0
-        else:
-            x = (float(payload["x"]) - 495.0) / 500.0
+        pan = status['Position']['PanTilt']['x']
+        tilt = status['Position']['PanTilt']['y']
 
-        # y = 0
-        # if float(payload["y"]) < 495.0:
-        #     x = ((-1.0 * float(payload["x"])) - 495.0) / 500.0
-        # else:
-        #     x = (float(payload["x"]) + 495.0) / 500.0
-        y = -1.0 * ((float(payload["y"]) - 495.0) / 500.0)
+        x = float(payload["x"])
+        y = float(payload["y"])
+        fovx = 58.2
+        fovy = 58.2
+        w = 990
+        h = 990
+
+        lx = (2 * x / w - 1) * math.tan(fovx / 2.0)
+        ly = (-2 * y / h + 1) * math.tan(fovy / 2.0)
+        lz = 1         
+
+        tx = math.cos(pan) * math.cos(tilt) * lx - math.cos(tilt) * math.sin(pan) * ly - math.sin(tilt) * lz
+        ty = math.sin(pan)             * lx + math.cos(pan)             * ly
+        tz = math.cos(pan) * math.sin(tilt) * lx - math.sin(pan) * math.sin(tilt) * ly + math.cos(tilt) * lz
+
+        newtilt = math.atan2(tz, tx)
+        newpan  = math.asin(ty / math.sqrt(tx^2 + ty^2 + tz^2))
 
         req.Translation = {
-            "PanTilt": {"x": x, "y": y},
+            "PanTilt": {"x": newpan, "y": newtilt},
         }
 
         req.Speed = {
@@ -262,7 +272,7 @@ class OnvifCam(UnifiCamBase):
                     is not None,
                     onvif_profile.PTZConfiguration.DefaultRelativePanTiltTranslationSpace
                     is not None,
-                    onvif_profile.PTZConfiguration.DefaultAbsolutePantTiltPositionSpace
+                    onvif_profile.PTZConfiguration.DefaultAbsolutePanTiltPositionSpace
                     is not None,
                 )
 
