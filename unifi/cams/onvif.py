@@ -189,7 +189,7 @@ class OnvifCam(UnifiCamBase):
         h = 990
 
         lx = (2 * x / w - 1) * math.tan(fovx / 2.0)
-        ly = (-2 * y / h + 1) * math.tan(fovy / 2.0)
+        ly = (2 * y / h - 1) * math.tan(fovy / 2.0)
         lz = 1         
 
         tx = math.cos(pan) * math.cos(tilt) * lx - math.cos(tilt) * math.sin(pan) * ly - math.sin(tilt) * lz
